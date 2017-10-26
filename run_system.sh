@@ -1,8 +1,8 @@
 #!/bin/bash
 
-$YOURSECRET1="secret1"
-$YOURSECRET2="secret2"
-$YOURSECRET3="secret3"
+YOURSECRET1="secret1"
+YOURSECRET2="secret2"
+YOURSECRET3="secret3"
 
 apt-get update
 apt-get install -y vim wget apt-transport-https gnupg curl unzip git default-jdk maven prosody default-jre
@@ -34,11 +34,11 @@ export org.jitsi.impl.neomedia.transform.srtp.SRTPCryptoContext.checkReplay fals
 
 mkdir $HOME/jitsi/jicofo && cd $HOME/jitsi/jicofo && \
 	git clone https://github.com/jitsi/jicofo.git && \
-	cd jicofo && \
+	cd $HOME/jitsi/jicofo/jicofo && \
 	mvn package -DskipTests -Dassembly.skipAssembly=false && \
-	unzip target/jicofo-linux-x64-1.1-SNAPSHOT.zip
+	unzip target/jicofo-linux-x86-1.1-SNAPSHOT.zip
 
-cd $HOME/jitsi/jicofo/jicofo/jicofo-linux-x64-1.1-SNAPSHOT && \
+cd $HOME/jitsi/jicofo/jicofo/jicofo-linux-x86-1.1-SNAPSHOT && \
 	./jicofo.sh --host=localhost --domain=jitsi.example.com --secret=$YOURSECRET2 --user_domain=auth.jitsi.example.com --user_name=focus --user_password=$YOURSECRET3
 
 mkdir $HOME/jitsi/jitsi-meet && cd $HOME/jitsi/jitsi-meet && \
@@ -51,9 +51,9 @@ cp jitsi.domain.config $HOME/jitsi/jitsi-meet/jitsi.example.com/
 echo $(cat $HOME/jitsi/jitsi-meet/jitsi.example.com/jitsi.domain.config) >> $HOME/jitsi/jitsi-meet/jitsi.example.com/config.js
 
 invoke-rc.d nginx restart
-echo "org.jitsi.videobridge.NAT_HARVESTER_LOCAL_ADDRESS=localhost:443" >> $HOME/jitsi/.sip-communicator/sip-communicator.properties && \
+echo "org.jitsi.videobridge.NAT_HARVESTER_LOCAL_ADDRESS=localhost" >> $HOME/jitsi/.sip-communicator/sip-communicator.properties && \
 	echo "org.jitsi.impl.neomedia.transform.srtp.SRTPCryptoContext.checkReplay=false" >> $HOME/jitsi/.sip-communicator/sip-communicator.properties && \
-	export public_ip $(curl -s ifconfig.co) && \
+	public_ip=$(curl -s ifconfig.co) && \
 	echo "org.jitsi.videobridge.NAT_HARVESTER_LOCAL_ADDRESS=$public_ip" >> $HOME/jitsi/.sip-communicator/sip-communicator.properties
 
 
